@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.lishangbu</groupId>
+    <artifactId>orange-parent</artifactId>
+    <version>${revision}</version>
+    <relativePath>orange-parent/pom.xml</relativePath>
+  </parent>
+  <artifactId>orange</artifactId>
+  <version>${revision}</version>
+  <packaging>pom</packaging>
+  <name>orange</name>
+  <description>Orange project powered by spring boot</description>
+  <url>https://github.com/lishangbu/orange</url>
+  <inceptionYear>2025</inceptionYear>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/license/mit</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>lisb</id>
+      <name>Shangbu Li</name>
+      <email>shangshili@hotmail.com</email>
+    </developer>
+  </developers>
+  <modules>
+    <module>orange-dependencies</module>
+    <module>orange-parent</module>
+  </modules>
+  <scm>
+    <connection>scm:git:https://github.com/lishangbu/orange.git</connection>
+    <developerConnection>scm:git:https://github.com/lishangbu/orange.git</developerConnection>
+    <url>https://github.com/lishangbu/orange</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/lishangbu/orange/issues</url>
+  </issueManagement>
+</project>

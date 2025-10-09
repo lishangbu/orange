@@ -31,7 +31,9 @@
   </developers>
   <modules>
     <module>orange-dependencies</module>
+    <module>orange-modules</module>
     <module>orange-parent</module>
+    <module>orange-support</module>
   </modules>
   <scm>
     <connection>scm:git:https://github.com/lishangbu/orange.git</connection>

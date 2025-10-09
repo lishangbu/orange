@@ -1,0 +1,2 @@
+io.github.lishangbu.orange.oauth2.common.autoconfiguration.PasswordEncoderAutoConfiguration
+io.github.lishangbu.orange.oauth2.common.properties.Oauth2Properties

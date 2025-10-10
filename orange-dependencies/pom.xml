@@ -46,7 +46,7 @@
     <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
     <java.version>25</java.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
-    <mybatis-flex.version>1.11.3</mybatis-flex.version>
+    <mybatis-plus.version>3.5.14</mybatis-plus.version>
     <!--ID of the server that you configured in settings.xml-->
     <publishing.server.id>central</publishing.server.id>
     <revision>0.0.1-SNAPSHOT</revision>
@@ -56,11 +56,11 @@
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!-- mybatis-flex -->
+      <!-- mybatis-plus -->
       <dependency>
-        <groupId>com.mybatis-flex</groupId>
-        <artifactId>mybatis-flex-dependencies</artifactId>
-        <version>${mybatis-flex.version}</version>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-bom</artifactId>
+        <version>${mybatis-plus.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

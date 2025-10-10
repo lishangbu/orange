@@ -8,8 +8,8 @@ applyTo: "**"
 
 ## 技术栈
 
-- 框架: Spring Boot 4.0.0.M3
-- ORM框架: Mybatis Flex
+- 框架: spring-boot 4.0.0.M3
+- ORM框架: mybatis-plus
 - 代码校验与格式化: spotless
 - 开发语言: Java
 - 项目管理工具: maven
@@ -19,8 +19,8 @@ applyTo: "**"
 - 数据库连接池: HikariCP
 - 缓存: caffeine
 - 文档: springdoc-openapi + swagger-ui
-- 单元测试: JUnit + Mockito
-- 持续集成: GitHub Actions
+- 单元测试: junit + mockito
+- 持续集成: gitHub actions
 
 ## 目录结构
 

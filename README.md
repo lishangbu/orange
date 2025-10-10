@@ -34,7 +34,7 @@ Orange
 - **Spring Boot 4.0**: 充分利用Spring Boot的最新功能和改进，简化开发流程，提高生产效率。
 - **Spring Framework 7**: 采用最新的Spring Framework版本，享受其增强的功能和更好的性能。
 - **Spring Security 7**: 提供最新的安全特性和改进，确保应用的安全性，最具现代化开发体验的Spring Authorization Server也已经回到了Spring Security怀抱。
-- **Mybatis Flex**: 又是Mybatis阵营的一个新生产物，虽然我个人是真的喜欢Spring Data JPA跟Spring Data Common规范，Hibernate 6.x只能算重，开发体验其实真的不差，但自有国情在此。
+- **Mybatis Plus**: 虽然我个人是真的喜欢Spring Data JPA跟Spring Data Common规范，Hibernate 6.x只能算重，开发体验其实真的不差，但自有国情在此。
 - **Lombok Plugin**: 经典的简化代码工具，这可能也是很多Javaer的第一个APT工具。
 
 ### 基本功能

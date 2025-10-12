@@ -32,3 +32,9 @@ build/
 .vscode/
 
 .flattened-pom.xml
+### logs ###
+/logs/
+*.log
+
+### RSA KEY ###
+**/src/main/resources/**/rsa/**.key

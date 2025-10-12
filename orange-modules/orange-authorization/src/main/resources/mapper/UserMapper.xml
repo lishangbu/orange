@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.lishangbu.orange.authorization.mapper.UserMapper">
+
+  <resultMap id="userWithRoleCodesResultMap" type="io.github.lishangbu.orange.authorization.model.UserWithRoleCodes">
+    <id property="id" column="id"/>
+    <result property="username" column="username"/>
+    <result property="password" column="password"/>
+    <result property="roleCodes" column="role_codes"/>
+  </resultMap>
+
+  <select id="selectUserWithRoleCodesByUsername" resultMap="userWithRoleCodesResultMap"
+          parameterType="string">
+    SELECT u.id, u.username, u.password, string_agg(r.code, ',') AS role_codes
+    FROM "user" u
+           LEFT JOIN user_role_relation ur ON u.id = ur.user_id
+           LEFT JOIN role r ON ur.role_id = r.id
+    WHERE u.username = #{username}
+    GROUP BY u.id, u.username, u.password
+  </select>
+
+</mapper>
+

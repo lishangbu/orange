@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.lishangbu.orange.authorization.mapper.OauthRegisteredClientMapper">
+    <resultMap id="OauthRegisteredClientResultMap" type="io.github.lishangbu.orange.authorization.entity.OauthRegisteredClient">
+        <id property="id" column="id" />
+        <result property="clientId" column="client_id" />
+        <result property="clientIdIssuedAt" column="client_id_issued_at" />
+        <result property="clientSecret" column="client_secret" />
+        <result property="clientSecretExpiresAt" column="client_secret_expires_at" />
+        <result property="clientName" column="client_name" />
+        <result property="clientAuthenticationMethods" column="client_authentication_methods" />
+        <result property="authorizationGrantTypes" column="authorization_grant_types" />
+        <result property="redirectUris" column="redirect_uris" />
+        <result property="postLogoutRedirectUris" column="post_logout_redirect_uris" />
+        <result property="scopes" column="scopes" />
+        <result property="requireProofKey" column="require_proof_key" />
+        <result property="requireAuthorizationConsent" column="require_authorization_consent" />
+        <result property="jwkSetUrl" column="jwk_set_url" />
+        <result property="tokenEndpointAuthenticationSigningAlgorithm" column="token_endpoint_authentication_signing_algorithm" />
+        <result property="x509CertificateSubjectDn" column="x509_certificate_subject_dn" />
+        <result property="authorizationCodeTimeToLive" column="authorization_code_time_to_live" />
+        <result property="accessTokenTimeToLive" column="access_token_time_to_live" />
+        <result property="accessTokenFormat" column="access_token_format" />
+        <result property="deviceCodeTimeToLive" column="device_code_time_to_live" />
+        <result property="reuseRefreshTokens" column="reuse_refresh_tokens" />
+        <result property="refreshTokenTimeToLive" column="refresh_token_time_to_live" />
+        <result property="idTokenSignatureAlgorithm" column="id_token_signature_algorithm" />
+        <result property="x509CertificateBoundAccessTokens" column="x509_certificate_bound_access_tokens" />
+    </resultMap>
+    <sql id="OauthRegisteredClientColumns">
+        id,
+        client_id,
+        client_id_issued_at,
+        client_secret,
+        client_secret_expires_at,
+        client_name,
+        client_authentication_methods,
+        authorization_grant_types,
+        redirect_uris,
+        post_logout_redirect_uris,
+        scopes,
+        require_proof_key,
+        require_authorization_consent,
+        jwk_set_url,
+        token_endpoint_authentication_signing_algorithm,
+        x509_certificate_subject_dn,
+        authorization_code_time_to_live,
+        access_token_time_to_live,
+        access_token_format,
+        device_code_time_to_live,
+        reuse_refresh_tokens,
+        refresh_token_time_to_live,
+        id_token_signature_algorithm,
+        x509_certificate_bound_access_tokens
+    </sql>
+    <select id="selectByClientId" resultMap="OauthRegisteredClientResultMap" parameterType="string">
+        SELECT <include refid="OauthRegisteredClientColumns"/> FROM oauth_registered_client WHERE client_id = #{clientId}
+    </select>
+</mapper>
+

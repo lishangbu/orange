@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.lishangbu.orange.authorization.mapper.OauthAuthorizationConsentMapper">
+    <!-- OauthAuthorizationConsent 实体映射 -->
+    <resultMap id="OauthAuthorizationConsentResultMap" type="io.github.lishangbu.orange.authorization.entity.OauthAuthorizationConsent">
+        <id property="id" column="id" />
+        <result property="registeredClientId" column="registered_client_id" />
+        <result property="principalName" column="principal_name" />
+        <result property="authorities" column="authorities" />
+    </resultMap>
+    <!-- 字段列表 -->
+    <sql id="OauthAuthorizationConsentColumns">
+        id,
+        registered_client_id,
+        principal_name,
+        authorities
+    </sql>
+    <!-- 根据 registeredClientId 和 principalName 查询授权确认信息 -->
+    <select id="selectByRegisteredClientIdAndPrincipalName" resultMap="OauthAuthorizationConsentResultMap" parameterType="map">
+        SELECT <include refid="OauthAuthorizationConsentColumns"/> FROM oauth_authorization_consent
+        WHERE registered_client_id = #{registeredClientId} AND principal_name = #{principalName}
+    </select>
+    <!-- 根据 registeredClientId 和 principalName 删除授权确认信息 -->
+    <delete id="deleteByRegisteredClientIdAndPrincipalName" parameterType="map">
+        DELETE FROM oauth_authorization_consent
+        WHERE registered_client_id = #{registeredClientId} AND principal_name = #{principalName}
+    </delete>
+</mapper>
+

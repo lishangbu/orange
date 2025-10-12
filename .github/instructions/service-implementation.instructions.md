@@ -8,7 +8,7 @@ applyTo: "*ServiceImpl.java"
 
 - 命名以 \*ServiceImpl 结尾，放在 service.impl 包
 - 实现对应的 Service 接口
-- 负责业务逻辑处理，调用 Repository 层
+- 负责业务逻辑处理，调用 Mapper 层
 - 方法注释需说明业务含义、参数、返回值
 - 使用 @Service 注解标记
 
@@ -32,8 +32,8 @@ applyTo: "*ServiceImpl.java"
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    
+    private final UserMapper userMapper;
+
     /**
      * 分页查询用户列表
      *
@@ -44,21 +44,21 @@ public class UserServiceImpl implements UserService {
     public Page<User> getPageUsers(Pageable pageRequest, UserQueryParam queryParam) {
         // 构建查询条件
         // 调用 Repository 进行查询
-        return userRepository.findAll(pageRequest);
+        return userMapper.selectList(pageRequest);
     }
-    
+
     /**
      * 根据用户ID获取用户信息
      *
      * @param id 用户ID
      * @return 用户信息
-     * @throws EntityNotFoundException 用户不存在时抛出
+     * @throws UserNotFoundException 用户不存在时抛出
      */
     public User getUserById(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("用户不存在"));
+        return userMapper.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("用户不存在"));
     }
-    
+
     /**
      * 保存用户信息
      *
@@ -70,9 +70,9 @@ public class UserServiceImpl implements UserService {
         // 业务逻辑校验
         validateUser(user);
         // 保存用户
-        return userRepository.save(user);
+        return userMapper.insert(user);
     }
-    
+
     /**
      * 更新用户信息
      *
@@ -82,12 +82,9 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     public User updateUser(Long id, User user) {
-        User existingUser = getUserById(id);
-        // 更新字段
-        BeanUtils.copyProperties(user, existingUser, "id", "createTime");
-        return userRepository.save(existingUser);
+        return userMapper.updateById(existingUser);
     }
-    
+
     /**
      * 根据ID删除用户
      *
@@ -95,18 +92,7 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     public void removeUserById(Long id) {
-        User user = getUserById(id);
-        userRepository.delete(user);
-    }
-    
-    /**
-     * 批量删除用户
-     *
-     * @param ids 用户ID列表
-     */
-    @Transactional
-    public void batchRemoveUsers(List<Long> ids) {
-        userRepository.deleteAllById(ids);
+        userMapper.deleteById(id);
     }
     
     /**

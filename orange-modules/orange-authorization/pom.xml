@@ -8,4 +8,34 @@
     <version>${revision}</version>
   </parent>
   <artifactId>orange-authorization</artifactId>
+  <dependencies>
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.lishangbu</groupId>
+      <artifactId>orange-mybatis-plus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.lishangbu</groupId>
+      <artifactId>orange-oauth2-authorization-server</artifactId>
+    </dependency>
+    <!-- H2驱动 -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-liquibase</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

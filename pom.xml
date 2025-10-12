@@ -30,7 +30,9 @@
     </developer>
   </developers>
   <modules>
+    <module>orange-application</module>
     <module>orange-dependencies</module>
+    <module>orange-extensions</module>
     <module>orange-modules</module>
     <module>orange-parent</module>
     <module>orange-support</module>

@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: orange-admin-server
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/orange?currentSchema=public&sslmode=disable
+mybatis-plus:
+  global-config:
+    banner: false
+  mapper-locations: classpath*:/mapper/**/*.xml

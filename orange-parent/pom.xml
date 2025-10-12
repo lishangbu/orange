@@ -67,7 +67,7 @@
               <tags>
                 <tag>latest</tag>
               </tags>
-              <verboseLogging>true</verboseLogging>
+              <verboseLogging>false</verboseLogging>
             </image>
             <layers>
               <enabled>true</enabled>

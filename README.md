@@ -1,7 +1,10 @@
 Orange 
 ========================================================================
 
-[![Build Status](https://github.com/lishangbu/orange/actions/workflows/build.yml/badge.svg)](https://maven.apache.org)
+[![Deploy Snapshot With Maven](https://github.com/lishangbu/orange/actions/workflows/deploy-snapshot.yml/badge.svg)](https://github.com/lishangbu/orange/actions/workflows/deploy-snapshot.yml)
+[![Dependabot Updates](https://github.com/lishangbu/orange/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/lishangbu/orange/actions/workflows/dependabot/dependabot-updates)
+[![Publish DockerHub](https://github.com/lishangbu/orange/actions/workflows/publish-dockerhub.yml/badge.svg)](https://github.com/lishangbu/orange/actions/workflows/publish-dockerhub.yml)
+[![Publish Javadoc](https://github.com/lishangbu/orange/actions/workflows/publish-javadoc.yml/badge.svg)](https://github.com/lishangbu/orange/actions/workflows/publish-javadoc.yml)
 [![License](https://img.shields.io/github/license/lishangbu/orange)](https://github.com/lishangbu/orange/blob/main/LICENSE)
 
 ## Table of Contents

@@ -9,5 +9,4 @@ import io.github.lishangbu.orange.authorization.entity.Permission;
  * @author lishangbu
  * @since 2025/08/28
  */
-public interface PermissionMapper extends BaseMapper<Permission> {
-}
+public interface PermissionMapper extends BaseMapper<Permission> {}

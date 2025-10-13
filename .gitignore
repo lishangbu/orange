@@ -31,10 +31,15 @@ build/
 ### VS Code ###
 .vscode/
 
-.flattened-pom.xml
-### logs ###
+### RSA KEY ###
+**/src/main/resources/**/rsa/**.key
+
+### macOS System File ###
+.DS_Store
+
+### Log File ###
 /logs/
 *.log
 
-### RSA KEY ###
-**/src/main/resources/**/rsa/**.key
+### Maven Temporary Files ###
+.flattened-pom.xml

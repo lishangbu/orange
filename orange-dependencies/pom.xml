@@ -44,6 +44,7 @@
     <!--docker私服地址-->
     <docker.repository>docker.io</docker.repository>
     <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
+    <jacoco.version>0.8.14</jacoco.version>
     <java.version>25</java.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <mybatis-plus.version>3.5.14</mybatis-plus.version>

@@ -64,9 +64,6 @@
               <name>${docker.repository}/${docker.image.prefix}/${project.artifactId}</name>
               <publish>true</publish>
               <pullPolicy>IF_NOT_PRESENT</pullPolicy>
-              <tags>
-                <tag>latest</tag>
-              </tags>
               <verboseLogging>false</verboseLogging>
             </image>
             <layers>

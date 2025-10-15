@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.lishangbu.orange.authorization.mapper.MenuMapper">
+  <!-- 通过角色代码查询所有菜单 -->
+  <resultMap id="MenuResultMap" type="io.github.lishangbu.orange.authorization.entity.Menu">
+    <id property="id" column="id"/>
+    <result property="parentId" column="parent_id"/>
+    <result property="disabled" column="disabled"/>
+    <result property="extra" column="extra"/>
+    <result property="icon" column="icon"/>
+    <result property="key" column="key"/>
+    <result property="label" column="label"/>
+    <result property="show" column="show"/>
+    <result property="path" column="path"/>
+    <result property="name" column="name"/>
+    <result property="redirect" column="redirect"/>
+    <result property="component" column="component"/>
+    <result property="sortOrder" column="sort_order"/>
+    <result property="pinned" column="pinned"/>
+    <result property="showTab" column="show_tab"/>
+    <result property="enableMultiTab" column="enable_multi_tab"/>
+  </resultMap>
+  <select id="selectListByRoleCodes" resultMap="MenuResultMap">
+    SELECT DISTINCT m.*
+    FROM menu m
+    JOIN role_menu_relation rmr ON m.id = rmr.menu_id
+    JOIN role r ON rmr.role_id = r.id
+    WHERE r.code IN
+    <foreach collection="roleCodes" item="code" open="(" separator="," close=")">
+      #{code}
+    </foreach>
+    ORDER BY m.sort_order DESC
+  </select>
+</mapper>

@@ -1,6 +1,6 @@
 package io.github.lishangbu.orange.authorization.controller;
 
-import io.github.lishangbu.orange.authorization.model.UserWithRoleCodes;
+import io.github.lishangbu.orange.authorization.model.UserWithRoles;
 import io.github.lishangbu.orange.authorization.service.UserService;
 import io.github.lishangbu.orange.oauth2.common.userdetails.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class UserController {
   private final UserService userService;
 
   @GetMapping("/info")
-  public UserWithRoleCodes getUserInfo(@AuthenticationPrincipal UserInfo user) {
+  public UserWithRoles getUserInfo(@AuthenticationPrincipal UserInfo user) {
     return userService.getUserByUsername(user.getUsername()).orElse(null);
   }
 }

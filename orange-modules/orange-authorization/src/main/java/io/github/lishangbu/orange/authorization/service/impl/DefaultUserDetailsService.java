@@ -1,5 +1,6 @@
 package io.github.lishangbu.orange.authorization.service.impl;
 
+import io.github.lishangbu.orange.authorization.entity.Role;
 import io.github.lishangbu.orange.authorization.mapper.UserMapper;
 import io.github.lishangbu.orange.oauth2.common.userdetails.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 /**
  * 用户服务
@@ -24,15 +24,16 @@ public class DefaultUserDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return userMapper
-        .selectUserWithRoleCodesByUsername(username)
+        .selectUserWithRolesByUsername(username)
         .map(
             user ->
                 new UserInfo(
                     user.getUsername(),
                     user.getPassword(),
-                    (StringUtils.hasText(user.getRoleCodes()))
-                        ? AuthorityUtils.createAuthorityList(user.getRoleCodes().split(","))
-                        : AuthorityUtils.NO_AUTHORITIES))
+                    AuthorityUtils.createAuthorityList(
+                        user.getRoles() == null
+                            ? new String[0]
+                            : user.getRoles().stream().map(Role::getCode).toArray(String[]::new))))
         .orElseThrow(() -> new UsernameNotFoundException("用户名或密码错误"));
   }
 }

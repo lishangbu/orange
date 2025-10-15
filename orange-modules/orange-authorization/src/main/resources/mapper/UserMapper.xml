@@ -2,22 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.github.lishangbu.orange.authorization.mapper.UserMapper">
 
-  <resultMap id="userWithRoleCodesResultMap" type="io.github.lishangbu.orange.authorization.model.UserWithRoleCodes">
+  <resultMap id="UserWithRolesResultMap" type="io.github.lishangbu.orange.authorization.model.UserWithRoles">
     <id property="id" column="id"/>
     <result property="username" column="username"/>
     <result property="password" column="password"/>
-    <result property="roleCodes" column="role_codes"/>
+    <collection property="roles" ofType="io.github.lishangbu.orange.authorization.entity.Role">
+      <id property="id" column="role_id"/>
+      <result property="code" column="role_code"/>
+      <result property="name" column="role_name"/>
+      <result property="enabled" column="role_enabled"/>
+    </collection>
   </resultMap>
 
-  <select id="selectUserWithRoleCodesByUsername" resultMap="userWithRoleCodesResultMap"
-          parameterType="string">
-    SELECT u.id, u.username, u.password, string_agg(r.code, ',') AS role_codes
+  <select id="selectUserWithRolesByUsername" resultMap="UserWithRolesResultMap" parameterType="string">
+    SELECT u.id, u.username, u.password,
+           r.id AS role_id, r.code AS role_code, r.name AS role_name, r.enabled AS role_enabled
     FROM "user" u
            LEFT JOIN user_role_relation ur ON u.id = ur.user_id
            LEFT JOIN role r ON ur.role_id = r.id
     WHERE u.username = #{username}
-    GROUP BY u.id, u.username, u.password
   </select>
 
 </mapper>
-

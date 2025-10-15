@@ -1,7 +1,7 @@
 package io.github.lishangbu.orange.authorization.service.impl;
 
 import io.github.lishangbu.orange.authorization.mapper.UserMapper;
-import io.github.lishangbu.orange.authorization.model.UserWithRoleCodes;
+import io.github.lishangbu.orange.authorization.model.UserWithRoles;
 import io.github.lishangbu.orange.authorization.service.UserService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
    * @return 查询到的用户详情，未找到时返回Optional.empty()
    */
   @Override
-  public Optional<UserWithRoleCodes> getUserByUsername(String username) {
-    return userMapper.selectUserWithRoleCodesByUsername(username);
+  public Optional<UserWithRoles> getUserByUsername(String username) {
+    return userMapper.selectUserWithRolesByUsername(username);
   }
 }

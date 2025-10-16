@@ -5,6 +5,55 @@ databaseChangeLog:
       comment: "基本的权限控制相关表"
       changes:
         - createTable:
+            tableName: organization
+            remarks: '组织信息'
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  remarks: '主键'
+              - column:
+                  name: parent_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                  remarks: '父组织ID'
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                  remarks: '名称'
+              - column:
+                  name: short_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
+                  remarks: '简称'
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
+                  defaultValue: 'true'
+                  remarks: '组织是否启用'
+              - column:
+                  name: remark
+                  type: varchar(200)
+                  constraints:
+                    nullable: true
+                  remarks: '备注'
+              - column:
+                  name: sort_order
+                  type: int
+                  constraints:
+                    nullable: false
+                  defaultValue: 0
+                  remarks: '排序顺序'
+        - createTable:
             tableName: user
             remarks: '用户信息'
             columns:

@@ -13,8 +13,9 @@ import org.springframework.context.annotation.Bean;
  * @since 2025/10/15
  */
 @AutoConfiguration
+@SuppressWarnings("SpringComponentScan")
 @MapperScan("io.github.lishangbu.orange.**.mapper")
-public class MybatisPlusConfigAutoConfiguration {
+public class MybatisPlusAutoConfiguration {
   /** 添加分页插件 */
   @Bean
   public MybatisPlusInterceptor mybatisPlusInterceptor() {

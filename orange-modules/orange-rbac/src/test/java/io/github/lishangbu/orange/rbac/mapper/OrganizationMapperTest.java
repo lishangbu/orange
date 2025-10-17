@@ -1,11 +1,14 @@
-package io.github.lishangbu.orange.authorization.mapper;
+package io.github.lishangbu.orange.rbac.mapper;
 
 import com.baomidou.mybatisplus.test.autoconfigure.MybatisPlusTest;
-import io.github.lishangbu.orange.authorization.entity.Organization;
 import io.github.lishangbu.orange.mybatisplus.autoconfiguration.MybatisPlusAutoConfiguration;
+import io.github.lishangbu.orange.rbac.entity.Organization;
 import jakarta.annotation.Resource;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
@@ -16,10 +19,12 @@ import org.springframework.test.context.ContextConfiguration;
  */
 @ContextConfiguration(classes = MybatisPlusAutoConfiguration.class)
 @MybatisPlusTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class OrganizationMapperTest {
   @Resource private OrganizationMapper mapper;
 
   @Test
+  @Order(1)
   void testInsertOrganization() {
     Organization org = new Organization();
     org.setName("测试组织");
@@ -31,6 +36,7 @@ class OrganizationMapperTest {
   }
 
   @Test
+  @Order(2)
   void testSelectOrganizationById() {
     Organization org = new Organization();
     org.setName("查询组织");
@@ -43,6 +49,7 @@ class OrganizationMapperTest {
   }
 
   @Test
+  @Order(3)
   void testUpdateOrganization() {
     Organization org = new Organization();
     org.setName("待更新组织");
@@ -57,6 +64,7 @@ class OrganizationMapperTest {
   }
 
   @Test
+  @Order(4)
   void testDeleteOrganization() {
     Organization org = new Organization();
     org.setName("待删除组织");

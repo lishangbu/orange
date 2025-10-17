@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 树形结构工具类，用于处理树形数据
  *
+ * <p>提供构建/查找/过滤/遍历等常用树操作，要求调用方显式传入获取子节点的函数，移除反射兼容以提高类型安全和性能
+ *
  * @author lishangbu
  * @since 2025/08/25
  */
@@ -17,12 +19,28 @@ import lombok.extern.slf4j.Slf4j;
 public class TreeUtils {
 
   /**
-   * 将列表转换为树形结构
+   * 将列表转换为树形结构，根父ID默认为 null
+   *
+   * @see #buildTree(List, Function, Function, Function, BiConsumer, Object)
+   */
+  public static <T, I> List<T> buildTree(
+      List<T> list,
+      Function<T, I> idGetter,
+      Function<T, I> parentIdGetter,
+      Function<T, List<T>> childrenGetter,
+      BiConsumer<T, List<T>> childrenSetter) {
+    return buildTree(list, idGetter, parentIdGetter, childrenGetter, childrenSetter, null);
+  }
+
+  /**
+   * 将列表转换为树形结构，允许指定 childrenGetter 和 rootParentId
    *
    * @param list 待转换的列表
    * @param idGetter 获取节点ID的函数
    * @param parentIdGetter 获取父节点ID的函数
+   * @param childrenGetter 获取节点子列表的函数（比反射更高效、类型安全）
    * @param childrenSetter 设置子节点的函数
+   * @param rootParentId 被视为根节点父ID的值（例如 null、0、-1 等）
    * @param <T> 节点类型
    * @param <I> ID类型
    * @return 树形结构的根节点列表
@@ -31,7 +49,9 @@ public class TreeUtils {
       List<T> list,
       Function<T, I> idGetter,
       Function<T, I> parentIdGetter,
-      BiConsumer<T, List<T>> childrenSetter) {
+      Function<T, List<T>> childrenGetter,
+      BiConsumer<T, List<T>> childrenSetter,
+      I rootParentId) {
     if (list == null || list.isEmpty()) {
       return Collections.emptyList();
     }
@@ -43,24 +63,27 @@ public class TreeUtils {
 
     // 遍历所有节点，将它们添加到父节点的子节点列表中
     for (T node : list) {
+      // 检测环路，发现环时直接抛出异常
+      detectCycle(node, parentIdGetter, nodeMap, rootParentId);
+
       I parentId = parentIdGetter.apply(node);
 
-      if (parentId == null) {
-        // 如果父ID为null，则为根节点
+      // 如果 parentId 等于传入的 rootParentId，则作为根节点
+      if (Objects.equals(parentId, rootParentId)) {
         roots.add(node);
       } else {
         // 尝试获取父节点
         T parentNode = nodeMap.get(parentId);
         if (parentNode != null) {
           // 获取父节点的子节点列表，如果不存在则创建新列表
-          List<T> children = getChildren(parentNode, childrenSetter);
+          List<T> children = childrenGetter.apply(parentNode);
           if (children == null) {
             children = new ArrayList<>();
             childrenSetter.accept(parentNode, children);
           }
           children.add(node);
         } else {
-          // 找不到父节点，作为根节点处理
+          // 找不到父节点，作为根节点处理（保守策略，避免丢失节点）
           roots.add(node);
         }
       }
@@ -69,15 +92,27 @@ public class TreeUtils {
     return roots;
   }
 
-  /** 获取节点的子节点列表 注意：这是一个辅助方法，需要实现一个反向操作从节点获取其子节点列表 */
-  @SuppressWarnings("unchecked")
-  private static <T> List<T> getChildren(T node, BiConsumer<T, List<T>> childrenSetter) {
-    // 这里需要根据实际情况实现，一个常见方式是节点类有getChildren方法
-    // 这里使用反射模拟获取children字段
-    try {
-      return (List<T>) node.getClass().getMethod("getChildren").invoke(node);
-    } catch (Exception e) {
-      return null;
+  /**
+   * 检测从给定节点沿 parent 链获取时是否存在环
+   *
+   * @throws IllegalStateException 如果检测到环
+   */
+  private static <T, I> void detectCycle(
+      T startNode, Function<T, I> parentIdGetter, Map<I, T> nodeMap, I rootParentId) {
+    java.util.Set<I> seen = new java.util.HashSet<>();
+
+    I parentId = parentIdGetter.apply(startNode);
+    while (parentId != null && !Objects.equals(parentId, rootParentId)) {
+      // 如果已经见过该 parentId，则存在环
+      if (!seen.add(parentId)) {
+        throw new IllegalStateException(
+            "Cycle detected in tree: node id '" + parentId + "' is part of a cycle");
+      }
+      T parentNode = nodeMap.get(parentId);
+      if (parentNode == null) {
+        break; // 指向外部节点，终止
+      }
+      parentId = parentIdGetter.apply(parentNode);
     }
   }
 
@@ -196,7 +231,7 @@ public class TreeUtils {
       }
 
       // 当前路径不包含目标节点，移除此节点
-      path.remove(path.size() - 1);
+      path.removeLast();
     }
 
     return false;
@@ -226,6 +261,7 @@ public class TreeUtils {
    * @param <T> 节点类型
    * @return 过滤后的树结构
    */
+  @SuppressWarnings("unchecked")
   public static <T> List<T> filterTree(
       List<T> tree,
       Predicate<T> predicate,
@@ -344,7 +380,8 @@ public class TreeUtils {
     List<java.lang.reflect.Field> fields = new ArrayList<>();
 
     // 获取当前类的字段
-    fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+    java.lang.reflect.Field[] declared = clazz.getDeclaredFields();
+    Collections.addAll(fields, declared);
 
     // 递归获取父类的字段
     Class<?> superClass = clazz.getSuperclass();

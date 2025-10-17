@@ -1,7 +1,7 @@
-package io.github.lishangbu.orange.authorization.service;
+package io.github.lishangbu.orange.rbac.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.github.lishangbu.orange.authorization.entity.Organization;
+import io.github.lishangbu.orange.rbac.entity.Organization;
 
 /**
  * 组织信息服务接口

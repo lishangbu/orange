@@ -1,16 +1,16 @@
-package io.github.lishangbu.orange.authorization.controller;
+package io.github.lishangbu.orange.rbac.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.github.lishangbu.orange.authorization.entity.Organization;
-import io.github.lishangbu.orange.authorization.service.OrganizationService;
+import io.github.lishangbu.orange.rbac.entity.Organization;
+import io.github.lishangbu.orange.rbac.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 组织控制器
  *
- * <p>提供组织的分页、条件查询、增删改查等 RESTful API 支持多级组织架构的管理与查询
+ * <p>提供组织的分页、条件查询、增删改查等 RESTFUL API 支持多级组织架构的管理与查询
  *
  * @author lishangbu
  * @since 2025/10/16

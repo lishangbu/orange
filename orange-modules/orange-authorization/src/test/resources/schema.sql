@@ -25,16 +25,6 @@ CREATE TABLE oauth_registered_client (
                                          id_token_signature_algorithm VARCHAR(20) DEFAULT 'RS256' NOT NULL, -- ID Token签名算法
                                          x509_certificate_bound_access_tokens BOOLEAN DEFAULT FALSE NOT NULL -- access token是否绑定X509证书
 );
--- 组织信息表
-CREATE TABLE organization (
-                              id BIGINT NOT NULL PRIMARY KEY, -- 主键
-                              parent_id BIGINT, -- 父组织ID
-                              name VARCHAR(100) NOT NULL, -- 名称
-                              short_name VARCHAR(50), -- 简称
-                              enabled BOOLEAN DEFAULT TRUE NOT NULL, -- 组织是否启用
-                              remark VARCHAR(200), -- 备注
-                              sort_order INTEGER DEFAULT 0 NOT NULL -- 排序顺序
-);
 -- 角色信息表
 CREATE TABLE role (
     id BIGINT NOT NULL PRIMARY KEY, -- 主键
@@ -42,4 +32,3 @@ CREATE TABLE role (
     name VARCHAR(50) DEFAULT '' NOT NULL, -- 角色名称
     enabled BOOLEAN DEFAULT TRUE NOT NULL -- 角色是否启用
 );
-

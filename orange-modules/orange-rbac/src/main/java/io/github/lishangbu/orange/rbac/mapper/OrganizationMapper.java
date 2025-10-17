@@ -1,8 +1,7 @@
-package io.github.lishangbu.orange.authorization.mapper;
+package io.github.lishangbu.orange.rbac.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.github.lishangbu.orange.authorization.entity.Organization;
-import org.apache.ibatis.annotations.Mapper;
+import io.github.lishangbu.orange.rbac.entity.Organization;
 
 /**
  * 组织信息数据库操作接口
@@ -12,5 +11,4 @@ import org.apache.ibatis.annotations.Mapper;
  * @author lishangbu
  * @since 2025/10/16
  */
-@Mapper
 public interface OrganizationMapper extends BaseMapper<Organization> {}

@@ -19,20 +19,6 @@ INSERT INTO oauth_registered_client (
        'http://localhost:8080', 'openid,profile', FALSE, FALSE, NULL, 'RS256', NULL, '2h', '2h', 'reference', '1h', TRUE,
        '30d', 'RS256', FALSE);
 
--- organization 表测试数据
-INSERT INTO organization (id, parent_id, name, short_name, enabled, remark, sort_order) VALUES
-                                                                                            (1, NULL, '集团总部', '总部', TRUE, '顶级组织', 1),
-                                                                                            (2, 1, '技术中心', '技术', TRUE, '技术部门', 2),
-                                                                                            (3, 1, '市场部', '市场', TRUE, '市场部门', 3),
-                                                                                            (4, 2, '研发组', '研发', TRUE, '技术中心下属研发组', 1),
-                                                                                            (5, 2, '运维组', '运维', FALSE, '技术中心下属运维组，暂未启用', 2),
-                                                                                            (6, 3, '销售组', '销售', TRUE, NULL, 1),
-                                                                                            (7, NULL, '分公司A', '分A', TRUE, '分公司A，独立组织', 4),
-                                                                                            (8, 7, '分公司A-人事部', '人事', TRUE, NULL, 1),
-                                                                                            (9, 7, '分公司A-财务部', '财务', TRUE, NULL, 2),
-                                                                                            (10, NULL, '分公司B', '分B', FALSE, '分公司B，已禁用', 5);
-
-
 -- role 表测试数据
 INSERT INTO role (id, code, name, enabled) VALUES
   (1, 'ADMIN', '超级管理员', TRUE),
@@ -41,5 +27,4 @@ INSERT INTO role (id, code, name, enabled) VALUES
   (4, 'DEV', '开发者', TRUE),
   (5, 'OPS', '运维', TRUE),
   (6, 'TEST', '测试', FALSE);
-
 

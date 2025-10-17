@@ -7,7 +7,8 @@
     <artifactId>orange-modules</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>orange-authorization</artifactId>
+  <artifactId>orange-rbac</artifactId>
+  <description>基于RBAC3.0模型的权限管理</description>
   <dependencies>
     <dependency>
       <groupId>com.baomidou</groupId>
@@ -22,8 +23,8 @@
       <artifactId>orange-oauth2-authorization-server</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.github.lishangbu</groupId>
-      <artifactId>orange-rbac</artifactId>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.baomidou</groupId>

@@ -1,5 +1,7 @@
-package io.github.lishangbu.orange.authorization.entity;
+package io.github.lishangbu.orange.rbac.entity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import lombok.Data;
@@ -24,17 +26,25 @@ public class Organization implements Serializable {
   private Long parentId;
 
   /** 组织名称 */
+  @NotBlank(message = "组织名称不能为空")
   private String name;
 
-  /** 组织简称 */
-  private String shortName;
+  /**
+   * 组织编码，用于外部引用和唯一标识
+   *
+   * <p>建议使用字母、数字及下划线组合，长度不超过100
+   */
+  @NotBlank(message = "组织编码不能为空")
+  private String code;
 
   /** 组织是否启用，true表示启用，false表示禁用 */
-  private Boolean enabled = true;
+  @NotNull(message = "组织启用状态不能为空")
+  private Boolean enabled;
 
   /** 备注信息 */
   private String remark;
 
   /** 排序顺序 */
+  @NotNull(message = "排序顺序不能为空")
   private Integer sortOrder;
 }

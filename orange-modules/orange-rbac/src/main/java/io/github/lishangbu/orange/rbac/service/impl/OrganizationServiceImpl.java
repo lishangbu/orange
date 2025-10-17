@@ -1,11 +1,11 @@
-package io.github.lishangbu.orange.authorization.service.impl;
+package io.github.lishangbu.orange.rbac.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.lishangbu.orange.authorization.entity.Organization;
-import io.github.lishangbu.orange.authorization.mapper.OrganizationMapper;
-import io.github.lishangbu.orange.authorization.service.OrganizationService;
+import io.github.lishangbu.orange.rbac.entity.Organization;
+import io.github.lishangbu.orange.rbac.mapper.OrganizationMapper;
+import io.github.lishangbu.orange.rbac.service.OrganizationService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

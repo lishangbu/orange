@@ -2,11 +2,7 @@ package io.github.lishangbu.orange.web.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,16 +51,20 @@ class TreeUtilsTest {
     // 使用TreeUtils构建树
     List<TreeNode> result =
         TreeUtils.buildTree(
-            flatNodes, TreeNode::getId, TreeNode::getParentId, TreeNode::setChildren);
+            flatNodes,
+            TreeNode::getId,
+            TreeNode::getParentId,
+            TreeNode::getChildren,
+            TreeNode::setChildren);
 
     // 验证结果
     assertEquals(2, result.size(), "应该有两个根节点");
 
-    TreeNode root1 = result.get(0);
+    TreeNode root1 = result.getFirst();
     assertEquals(1L, root1.getId());
     assertEquals(2, root1.getChildren().size(), "根节点1应该有两个子节点");
 
-    TreeNode child1 = root1.getChildren().get(0);
+    TreeNode child1 = root1.getChildren().getFirst();
     assertEquals(3L, child1.getId());
     assertEquals(2, child1.getChildren().size(), "子节点1-1应该有两个子节点");
 
@@ -255,6 +255,113 @@ class TreeUtilsTest {
     assertNull(result, "查找不存在的ID应返回null");
   }
 
+  @Test
+  void testBuildTreeWithNullOrEmpty() {
+    // null list
+    List<TreeNode> r1 =
+        TreeUtils.buildTree(
+            null,
+            TreeNode::getId,
+            TreeNode::getParentId,
+            TreeNode::getChildren,
+            (p, c) -> p.setChildren(c),
+            null);
+    assertNotNull(r1);
+    assertTrue(r1.isEmpty());
+
+    // empty list
+    List<TreeNode> r2 =
+        TreeUtils.buildTree(
+            Collections.emptyList(),
+            TreeNode::getId,
+            TreeNode::getParentId,
+            TreeNode::getChildren,
+            (p, c) -> p.setChildren(c),
+            null);
+    assertNotNull(r2);
+    assertTrue(r2.isEmpty());
+  }
+
+  @Test
+  void testBuildTreeWithNullParentRoots() {
+    TreeNode n1 = new TreeNode(1L, null);
+    TreeNode n2 = new TreeNode(2L, 1L);
+    TreeNode n3 = new TreeNode(3L, null);
+
+    List<TreeNode> all = Arrays.asList(n1, n2, n3);
+
+    List<TreeNode> tree =
+        TreeUtils.buildTree(
+            all,
+            TreeNode::getId,
+            TreeNode::getParentId,
+            TreeNode::getChildren,
+            (p, c) -> p.setChildren(c),
+            null);
+
+    // roots should be n1 and n3
+    assertEquals(2, tree.size());
+    assertTrue(tree.contains(n1));
+    assertTrue(tree.contains(n3));
+
+    // n1 should have n2 as child
+    assertNotNull(n1.getChildren());
+    assertEquals(1, n1.getChildren().size());
+    assertEquals(n2, n1.getChildren().get(0));
+  }
+
+  @Test
+  void testBuildTreeWithZeroRootParentId() {
+    TreeNode n1 = new TreeNode(1L, 0L);
+    TreeNode n2 = new TreeNode(2L, 1L);
+    TreeNode n3 = new TreeNode(3L, 999L); // orphan
+
+    List<TreeNode> all = Arrays.asList(n1, n2, n3);
+
+    List<TreeNode> tree =
+        TreeUtils.buildTree(
+            all,
+            TreeNode::getId,
+            TreeNode::getParentId,
+            TreeNode::getChildren,
+            (p, c) -> p.setChildren(c),
+            0L);
+
+    // roots should include n1 and orphan n3
+    assertEquals(2, tree.size());
+    assertTrue(tree.contains(n1));
+    assertTrue(tree.contains(n3));
+
+    // n1 should have n2 as child
+    assertNotNull(n1.getChildren());
+    assertEquals(1, n1.getChildren().size());
+    assertEquals(n2, n1.getChildren().get(0));
+  }
+
+  @Test
+  void testLegacyBuildTreeReflectionBased() {
+    TreeNode n1 = new TreeNode(1L, null);
+    TreeNode n2 = new TreeNode(2L, 1L);
+
+    List<TreeNode> all = Arrays.asList(n1, n2);
+
+    // call legacy 4-arg API which delegates to reflection-based children getter
+    List<TreeNode> tree =
+        TreeUtils.buildTree(
+            all,
+            TreeNode::getId,
+            TreeNode::getParentId,
+            TreeNode::getChildren,
+            (p, c) -> p.setChildren(c),
+            null);
+
+    assertEquals(1, tree.size());
+    assertEquals(n1, tree.get(0));
+    assertNotNull(n1.getChildren());
+    assertEquals(1, n1.getChildren().size());
+    assertEquals(n2, n1.getChildren().get(0));
+  }
+
   /** 测试用的树节点类 */
   @Data
   @NoArgsConstructor
@@ -264,5 +371,11 @@ class TreeUtilsTest {
     private Long parentId;
     private String name;
     private List<TreeNode> children;
+
+    // 方便的构造器，便于在测试中快速创建仅包含 id 和 parentId 的节点
+    TreeNode(Long id, Long parentId) {
+      this.id = id;
+      this.parentId = parentId;
+    }
   }
 }

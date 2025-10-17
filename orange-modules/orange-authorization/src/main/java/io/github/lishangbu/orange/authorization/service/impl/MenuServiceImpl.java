@@ -55,7 +55,13 @@ public class MenuServiceImpl implements MenuService {
     List<MenuTreeNode> treeNodes =
         menus.stream().map(MenuTreeNode::new).collect(Collectors.toList());
 
+    // 使用新的 type-safe 重载，传入 childrenGetter 避免反射
     return TreeUtils.buildTree(
-        treeNodes, MenuTreeNode::getId, MenuTreeNode::getParentId, MenuTreeNode::setChildren);
+        treeNodes,
+        MenuTreeNode::getId,
+        MenuTreeNode::getParentId,
+        MenuTreeNode::getChildren,
+        MenuTreeNode::setChildren,
+        null);
   }
 }

@@ -28,11 +28,11 @@ databaseChangeLog:
                     nullable: false
                   remarks: '名称'
               - column:
-                  name: short_name
-                  type: varchar(50)
+                  name: code
+                  type: varchar(100)
                   constraints:
                     nullable: true
-                  remarks: '简称'
+                  remarks: '组织编码，用于外部引用和唯一标识'
               - column:
                   name: enabled
                   type: boolean
@@ -325,3 +325,22 @@ databaseChangeLog:
                   type: varchar(50)
                   constraints:
                     nullable: true
+  - changeSet:
+      id: 101-rename-short_name-to-code
+      author: lishangbu
+      comment: "将历史库中的 organization.short_name 重命名为 organization.code（如果存在）"
+      preConditions:
+        - onFail: MARK_RAN
+        - columnExists:
+            tableName: organization
+            columnName: short_name
+      changes:
+        - renameColumn:
+            tableName: organization
+            oldColumnName: short_name
+            newColumnName: code
+            columnDataType: varchar(100)
+        - modifyDataType:
+            tableName: organization
+            columnName: code
+            newDataType: varchar(100)

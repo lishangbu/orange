@@ -12,5 +12,6 @@
   <description>项目模块整合</description>
   <modules>
     <module>orange-authorization</module>
+    <module>orange-rbac</module>
   </modules>
 </project>

@@ -12,7 +12,7 @@ applyTo: "**"
 - ORM框架: mybatis-plus
 - 代码校验与格式化: spotless
 - 开发语言: Java
-- 项目管理工具: maven
+- 项目管理工具: maven(maven wrapper)
 - APT辅助工具: lombok
 - 日志: slf4j + logback
 - 安全: spring-oauth2-authorization-server 

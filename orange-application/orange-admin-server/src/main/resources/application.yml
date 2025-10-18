@@ -1,6 +1,8 @@
 spring:
   application:
-    name: orange-admin-server
+    name: @project.artifactId@
+  profiles:
+    active: dev
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres

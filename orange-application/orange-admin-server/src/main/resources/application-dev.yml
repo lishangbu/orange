@@ -1,0 +1,6 @@
+oauth2:
+  ignore-urls:
+    - /actuator/**
+    - /.well-known/**
+  jwt-private-key-location: classpath:rsa_private_key.pem
+  jwt-public-key-location: classpath:rsa_public_key.pem

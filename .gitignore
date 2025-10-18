@@ -32,7 +32,8 @@ build/
 .vscode/
 
 ### RSA KEY ###
-**/src/main/resources/**/rsa/**.key
+rsa_private_key.pem
+rsa_public_key.pem
 
 ### macOS System File ###
 .DS_Store

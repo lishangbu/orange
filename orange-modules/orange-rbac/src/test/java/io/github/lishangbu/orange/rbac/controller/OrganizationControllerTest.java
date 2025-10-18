@@ -1,18 +1,19 @@
 package io.github.lishangbu.orange.rbac.controller;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.lishangbu.orange.rbac.entity.Organization;
+import io.github.lishangbu.orange.rbac.model.OrganizationTreeNode;
 import io.github.lishangbu.orange.rbac.service.OrganizationService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
 
 /**
  * 组织控制器单元测试
@@ -41,22 +42,6 @@ class OrganizationControllerTest {
     if (mocksCloseable != null) {
       mocksCloseable.close();
     }
-  }
-
-  @Test
-  void page_shouldDelegateToServiceAndReturnPage() {
-    Page<Organization> requestPage = new Page<>(1, 10);
-    Organization cond = new Organization();
-
-    IPage<Organization> expected = new Page<>(1, 10);
-    expected.setRecords(java.util.Collections.singletonList(new Organization()));
-
-    when(organizationService.getPageByOrganization(any(), any())).thenReturn(expected);
-
-    IPage<Organization> result = controller.page(requestPage, cond);
-
-    assertSame(expected, result);
-    verify(organizationService, times(1)).getPageByOrganization(requestPage, cond);
   }
 
   @Test
@@ -116,5 +101,29 @@ class OrganizationControllerTest {
 
     assertSame(org, result);
     verify(organizationService, times(1)).getOrganizationById(id);
+  }
+
+  @Test
+  void getOrganizationWithDescendants_shouldDelegateAndReturnList() {
+    Long id = 1L;
+    List<OrganizationTreeNode> expected = Collections.singletonList(new OrganizationTreeNode(new Organization()));
+    when(organizationService.getOrganizationWithDescendants(id)).thenReturn(expected);
+
+    List<OrganizationTreeNode> result = controller.getOrganizationWithDescendants(id);
+
+    assertSame(expected, result);
+    verify(organizationService, times(1)).getOrganizationWithDescendants(id);
+  }
+
+  @Test
+  void listAllChildrenByParentId_shouldDelegateAndReturnList() {
+    Long parentId = 2L;
+    List<OrganizationTreeNode> expected = Collections.emptyList();
+    when(organizationService.listAllChildrenByParentId(parentId)).thenReturn(expected);
+
+    List<OrganizationTreeNode> result = controller.listAllChildrenByParentId(parentId);
+
+    assertSame(expected, result);
+    verify(organizationService, times(1)).listAllChildrenByParentId(parentId);
   }
 }

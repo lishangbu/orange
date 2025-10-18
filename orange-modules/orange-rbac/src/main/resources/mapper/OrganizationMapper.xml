@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.lishangbu.orange.rbac.mapper.OrganizationMapper">
+
+  <!-- 组织信息结果映射 -->
+  <resultMap id="BaseResultMap" type="io.github.lishangbu.orange.rbac.entity.Organization">
+    <id column="id" property="id" jdbcType="BIGINT"/>
+    <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="code" property="code" jdbcType="VARCHAR"/>
+    <result column="enabled" property="enabled" jdbcType="BOOLEAN"/>
+    <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    <result column="sort_order" property="sortOrder" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <!-- 递归查询所有子节点（多级） -->
+  <select id="selectAllChildrenByParentId" resultMap="BaseResultMap">
+    WITH RECURSIVE organization_tree AS (
+      SELECT id, parent_id, name, code, enabled, remark, sort_order
+      FROM organization
+      WHERE parent_id = #{parentId}
+      UNION ALL
+      SELECT o.id, o.parent_id, o.name, o.code, o.enabled, o.remark, o.sort_order
+      FROM organization o
+      INNER JOIN organization_tree ot ON o.parent_id = ot.id
+    )
+    SELECT * FROM organization_tree
+    ORDER BY sort_order ASC, id ASC
+  </select>
+
+  <!-- 查询指定组织及其所有下级组织（含自身） -->
+  <select id="selectOrganizationWithDescendantsById" resultMap="BaseResultMap">
+    WITH RECURSIVE organization_tree AS (
+      SELECT id, parent_id, name, code, enabled, remark, sort_order
+      FROM organization
+      WHERE id = #{id}
+      UNION ALL
+      SELECT o.id, o.parent_id, o.name, o.code, o.enabled, o.remark, o.sort_order
+      FROM organization o
+      INNER JOIN organization_tree ot ON o.parent_id = ot.id
+    )
+    SELECT * FROM organization_tree
+    ORDER BY sort_order ASC, id ASC
+  </select>
+
+</mapper>

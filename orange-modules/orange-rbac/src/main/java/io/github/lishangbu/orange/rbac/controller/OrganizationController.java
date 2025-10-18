@@ -3,9 +3,13 @@ package io.github.lishangbu.orange.rbac.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.lishangbu.orange.rbac.entity.Organization;
+import io.github.lishangbu.orange.rbac.model.OrganizationTreeNode;
 import io.github.lishangbu.orange.rbac.service.OrganizationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 组织控制器
@@ -23,25 +27,13 @@ public class OrganizationController {
   private final OrganizationService organizationService;
 
   /**
-   * 分页查询组织列表
-   *
-   * @param page 分页参数，包含页码和每页大小
-   * @param condition 查询条件，包含名称、启用状态等字段
-   * @return 组织分页数据，包含组织列表和分页信息
-   */
-  @GetMapping("/page")
-  public IPage<Organization> page(Page<Organization> page, Organization condition) {
-    return organizationService.getPageByOrganization(page, condition);
-  }
-
-  /**
    * 新增组织
    *
    * @param organization 组织实体，包含名称、启用状态等信息
    * @return 新增后的组织实体
    */
   @PostMapping
-  public Organization create(@RequestBody Organization organization) {
+  public Organization create(@RequestBody @Valid Organization organization) {
     return organizationService.saveOrganization(organization);
   }
 
@@ -51,7 +43,7 @@ public class OrganizationController {
    * @param organization 组织实体，包含需更新的字段，ID不能为空
    */
   @PutMapping
-  public void update(@RequestBody Organization organization) {
+  public void update(@RequestBody @Valid Organization organization) {
     organizationService.updateOrganization(organization);
   }
 
@@ -74,5 +66,32 @@ public class OrganizationController {
   @GetMapping("/{id:\\d+}")
   public Organization getById(@PathVariable Long id) {
     return organizationService.getOrganizationById(id);
+  }
+
+  /**
+   * 查询指定组织及其所有下级组织（含自身）
+   * <p>
+   * 根据组织ID，递归返回该节点及其所有子孙节点，结果按 sortOrder、id 升序排列
+   *
+   * @param id 组织ID
+   * @return 组织及其所有下级组织列表
+   */
+  @GetMapping("/tree/descendants/{id:\\d+}")
+  public List<OrganizationTreeNode> getOrganizationWithDescendants(@PathVariable Long id) {
+    return organizationService.getOrganizationWithDescendants(id);
+  }
+
+  /**
+   * 递归查询所有子节点（不包含当前节点）
+   * <p>
+   * 根据指定父组织ID，返回其所有下级组织（多级），不包含父节点本身
+   * 结果按 sortOrder、id 升序排列
+   *
+   * @param parentId 父组织ID
+   * @return 所有子孙节点的组织列表
+   */
+  @GetMapping("/tree/children/{parentId:\\d+}")
+  public List<OrganizationTreeNode> listAllChildrenByParentId(@PathVariable Long parentId) {
+    return organizationService.listAllChildrenByParentId(parentId);
   }
 }

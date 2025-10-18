@@ -14,9 +14,11 @@ insert into menu (id, parent_id, disabled, extra, icon, key, label, show, path, 
 values (1, null, false, null, 'iconify-[mage--dashboard-chart]', 'dashboard', '仪表板', true, 'dashboard', 'dashboard',
         null, 'dashboard/index', 0, true, true, false),
        (2, null, false, null, 'iconify-[mdi--security]', 'auth', '权限管理', true, 'auth', 'auth', null,
-        'auth', 0, false, true, false),
-       (3, 2, false, null, 'iconify-[mdi--user-key]', 'role', '角色管理', true, 'role', 'role', null,
-        'auth/role/index', 0, false, true, false);
+        'rbac', 0, false, true, false),
+       (3, 2, false, null, 'iconify-[mdi--company]', 'role', '组织管理', true, 'organization', 'organization', null,
+        'rbac/organization/index', 0, false, true, false),
+       (4, 2, false, null, 'iconify-[mdi--user-key]', 'role', '角色管理', true, 'role', 'role', null,
+        'rbac/role/index', 0, false, true, false);
 
 INSERT INTO role_menu_relation (role_id,menu_id)
 VALUES (1, 1),
@@ -24,4 +26,6 @@ VALUES (1, 1),
        (1, 2),
        (2, 2),
        (1, 3),
-       (2, 3);
+       (2, 3),
+       (1, 4),
+       (2, 4);

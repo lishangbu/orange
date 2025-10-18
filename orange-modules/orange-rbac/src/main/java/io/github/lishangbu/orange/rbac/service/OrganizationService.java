@@ -1,7 +1,10 @@
 package io.github.lishangbu.orange.rbac.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.github.lishangbu.orange.rbac.entity.Organization;
+import io.github.lishangbu.orange.rbac.model.OrganizationTreeNode;
+import org.jspecify.annotations.NonNull;
+
+import java.util.List;
 
 /**
  * 组织信息服务接口
@@ -12,18 +15,6 @@ import io.github.lishangbu.orange.rbac.entity.Organization;
  * @since 2025/10/16
  */
 public interface OrganizationService {
-
-  /**
-   * 分页查询组织列表
-   *
-   * <p>支持按名称、启用状态等条件进行模糊查询，结果按排序顺序升序排列
-   *
-   * @param page 分页参数，包含页码和每页大小
-   * @param organizationCondition 查询条件，包含名称、启用状态等字段
-   * @return 组织分页数据，包含组织列表和分页信息
-   */
-  IPage<Organization> getPageByOrganization(
-      IPage<Organization> page, Organization organizationCondition);
 
   /**
    * 新增组织信息
@@ -62,4 +53,27 @@ public interface OrganizationService {
    * @return 组织实体，未找到时返回null
    */
   Organization getOrganizationById(Long id);
+
+  /**
+   * 查询指定组织及其所有下级组织（含自身）
+   * <p>
+   * 根据组织ID，递归返回该节点及其所有子孙节点，结果按 sortOrder、id 升序排列
+   *
+   * @param id 组织ID，不能为空
+   * @return 组织及其所有下级组织列表
+   */
+  @NonNull
+  List<OrganizationTreeNode> getOrganizationWithDescendants(@NonNull Long id);
+
+  /**
+   * 递归查询所有子节点（不包含当前节点）
+   * <p>
+   * 根据指定父组织ID，返回其所有下级组织（多级），不包含父节点本身
+   * 结果按 sortOrder、id 升序排列
+   *
+   * @param parentId 父组织ID，不能为空
+   * @return 所有子孙节点的组织列表
+   */
+  @NonNull
+  List<OrganizationTreeNode> listAllChildrenByParentId(@NonNull Long parentId);
 }

@@ -19,7 +19,8 @@ databaseChangeLog:
                   name: parent_id
                   type: bigint
                   constraints:
-                    nullable: true
+                    nullable: false
+                  defaultValue: '0'
                   remarks: '父组织ID'
               - column:
                   name: name
@@ -31,8 +32,10 @@ databaseChangeLog:
                   name: code
                   type: varchar(100)
                   constraints:
+                    unique: true
+                    uniqueConstraintName: 'uk_organization_code'
                     nullable: true
-                  remarks: '组织编码，用于外部引用和唯一标识'
+                  remarks: '组织编码'
               - column:
                   name: enabled
                   type: boolean
@@ -53,6 +56,13 @@ databaseChangeLog:
                     nullable: false
                   defaultValue: 0
                   remarks: '排序顺序'
+        # 父组织ID索引，提升树形结构递归查询性能
+        - createIndex:
+            tableName: organization
+            indexName: idx_organization_parent_id
+            columns:
+              - column:
+                  name: parent_id
         - createTable:
             tableName: user
             remarks: '用户信息'

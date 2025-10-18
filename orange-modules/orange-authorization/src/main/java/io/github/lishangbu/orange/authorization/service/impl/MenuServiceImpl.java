@@ -5,15 +5,16 @@ import io.github.lishangbu.orange.authorization.mapper.MenuMapper;
 import io.github.lishangbu.orange.authorization.model.MenuTreeNode;
 import io.github.lishangbu.orange.authorization.service.MenuService;
 import io.github.lishangbu.orange.web.util.TreeUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 /**
  * 菜单服务接口实现
@@ -31,7 +32,7 @@ public class MenuServiceImpl implements MenuService {
   public List<MenuTreeNode> listMenuTreeByRoleCodes(List<String> roleCodes) {
     List<Menu> menus = menuMapper.selectListByRoleCodes(roleCodes);
     log.debug("根据角色编码获取到 [{}] 条菜单记录", menus == null ? 0 : menus.size());
-    return buildTreeFromMenus(menus);
+    return buildTreeFromMenus(menus, 0L);
   }
 
   /**
@@ -45,9 +46,9 @@ public class MenuServiceImpl implements MenuService {
    *
    * @param menus 权限实体列表，允许为 null
    * @return 树结构的 PermissionTreeNode 列表，永远不返回 null
-   * @see TreeUtils#buildTree(List, Function, Function, BiConsumer)
+   * @see TreeUtils#buildTree(List, Function, Function, Function, BiConsumer)
    */
-  private List<MenuTreeNode> buildTreeFromMenus(List<Menu> menus) {
+  private List<MenuTreeNode> buildTreeFromMenus(List<Menu> menus, Long parentId) {
     if (CollectionUtils.isEmpty(menus)) {
       return Collections.emptyList();
     }
@@ -55,13 +56,11 @@ public class MenuServiceImpl implements MenuService {
     List<MenuTreeNode> treeNodes =
         menus.stream().map(MenuTreeNode::new).collect(Collectors.toList());
 
-    // 使用新的 type-safe 重载，传入 childrenGetter 避免反射
     return TreeUtils.buildTree(
         treeNodes,
         MenuTreeNode::getId,
         MenuTreeNode::getParentId,
         MenuTreeNode::getChildren,
-        MenuTreeNode::setChildren,
-        null);
+      MenuTreeNode::setChildren, parentId);
   }
 }

@@ -117,12 +117,11 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
     // 使用默认算法 RS256，并标记为签名用途
     JWSAlgorithm alg = JWSAlgorithm.RS256;
 
-    // 构建 JWK（包含私钥，供签名使用）
+    // 构建 JWK（包含私钥）
     RSAKey rsaKey =
         new RSAKey.Builder(publicKey)
             .privateKey(privateKey)
             .keyID(kid)
-            .keyUse(KeyUse.SIGNATURE)
             .algorithm(alg)
             .build();
 
@@ -230,7 +229,7 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
             String content =
                 new String(inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
             loadedPublic = loadPublicKey(content);
-            log.info("从 [{}] 成功加载公钥", jwtPublicKeyLocation);
+            log.debug("从 [{}] 成功加载公钥", jwtPublicKeyLocation);
           }
         } else {
           log.error("公钥资源不存在或不可读: {}", jwtPublicKeyLocation);
@@ -251,7 +250,7 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
             String content =
                 new String(inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
             loadedPrivate = loadPrivateKey(content);
-            log.info("从 [{}] 成功加载私钥", jwtPrivateKeyLocation);
+            log.debug("从 [{}] 成功加载私钥", jwtPrivateKeyLocation);
           }
         } else {
           log.error("私钥资源不存在或不可读: {}", jwtPrivateKeyLocation);
@@ -267,7 +266,7 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
     if (loadedPublic != null && loadedPrivate != null) {
       this.publicKey = loadedPublic;
       this.privateKey = loadedPrivate;
-      log.info("成功从配置加载公私钥对");
+      log.debug("成功从配置加载公私钥对");
       return;
     }
 

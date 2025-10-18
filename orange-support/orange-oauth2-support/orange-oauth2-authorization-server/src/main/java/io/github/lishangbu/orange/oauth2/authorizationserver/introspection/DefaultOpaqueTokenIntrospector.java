@@ -38,7 +38,8 @@ public class DefaultOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     OAuth2Authorization oldAuthorization =
         authorizationService.findByToken(token, OAuth2TokenType.ACCESS_TOKEN);
     if (Objects.isNull(oldAuthorization)) {
-      throw new InvalidBearerTokenException(token);
+      log.error("资源服务器未找到对应的 token [{}]", token);
+      throw new InvalidBearerTokenException("Invalid access token: " + token);
     }
     // 客户端模式默认返回
     if (AuthorizationGrantType.CLIENT_CREDENTIALS.equals(

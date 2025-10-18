@@ -116,9 +116,8 @@ public class AuthorizationServerAutoConfiguration {
                         .failureHandler(new AuthorizationEndpointErrorResponseHandler()))
             .exceptionHandling(
                 exceptions -> {
-                  exceptions.defaultAuthenticationEntryPointFor(
-                      new DefaultAuthenticationEntryPoint(),
-                      new MediaTypeRequestMatcher(MediaType.APPLICATION_JSON, MediaType.TEXT_HTML));
+                  // 使用统一的 AuthenticationEntryPoint，避免 MediaTypeRequestMatcher 导致的不匹配
+                  exceptions.authenticationEntryPoint(new DefaultAuthenticationEntryPoint());
                 })
             .build();
 

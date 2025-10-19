@@ -15,7 +15,7 @@ values (1, null, false, null, 'iconify-[mage--dashboard-chart]', 'dashboard', '�
         null, 'dashboard/index', 0, true, true, false),
        (2, null, false, null, 'iconify-[mdi--security]', 'auth', '权限管理', true, 'auth', 'auth', null,
         'rbac', 0, false, true, false),
-       (3, 2, false, null, 'iconify-[mdi--company]', 'role', '组织管理', true, 'organization', 'organization', null,
+       (3, 2, false, null, 'iconify-[mdi--company]', 'organization', '组织管理', true, 'organization', 'organization', null,
         'rbac/organization/index', 0, false, true, false),
        (4, 2, false, null, 'iconify-[mdi--user-key]', 'role', '角色管理', true, 'role', 'role', null,
         'rbac/role/index', 0, false, true, false);

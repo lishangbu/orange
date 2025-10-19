@@ -18,13 +18,3 @@ INSERT INTO oauth_registered_client (
        'client_secret_basic,client_secret_post,client_secret_jwt', 'refresh_token,client_credentials,password', NULL,
        'http://localhost:8080', 'openid,profile', FALSE, FALSE, NULL, 'RS256', NULL, '2h', '2h', 'reference', '1h', TRUE,
        '30d', 'RS256', FALSE);
-
--- role 表测试数据
-INSERT INTO role (id, code, name, enabled) VALUES
-  (1, 'ADMIN', '超级管理员', TRUE),
-  (2, 'USER', '普通用户', TRUE),
-  (3, 'GUEST', '访客', FALSE),
-  (4, 'DEV', '开发者', TRUE),
-  (5, 'OPS', '运维', TRUE),
-  (6, 'TEST', '测试', FALSE);
-

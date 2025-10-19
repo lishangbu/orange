@@ -2,9 +2,10 @@ package io.github.lishangbu.orange.rbac.entity;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
 import java.io.Serial;
 import java.io.Serializable;
-import lombok.Data;
 
 /**
  * 组织信息实体类，封装组织的层级结构和基本属性
@@ -22,7 +23,10 @@ public class Organization implements Serializable {
   /** 主键，唯一标识组织 */
   private Long id;
 
-  /** 父组织ID，指向上级组织，顶级组织为null */
+  /**
+   * 父组织ID，指向上级组织，顶级组织为0
+   */
+  @NotNull(message = "上级组织不能为空")
   private Long parentId;
 
   /** 组织名称 */
@@ -47,4 +51,18 @@ public class Organization implements Serializable {
   /** 排序顺序 */
   @NotNull(message = "排序顺序不能为空")
   private Integer sortOrder;
+
+  /**
+   * 组织层级深度，表示当前节点距离根节点的层级
+   * <p>根节点深度为1，子节点依次递增
+   * 可用于树形结构展示、权限控制等场景
+   */
+  private Integer depth;
+
+  /**
+   * 顶层组织ID冗余字段，表示当前节点所属的顶层公司/集团ID
+   * <p>顶层节点自身为其rootId，子节点为其祖先的rootId
+   * 用于高效分组、权限控制、报表统计等场景
+   */
+  private Long rootId;
 }

@@ -56,6 +56,19 @@ databaseChangeLog:
                     nullable: false
                   defaultValue: 0
                   remarks: '排序顺序'
+              - column:
+                  name: depth
+                  type: int
+                  constraints:
+                    nullable: false
+                  defaultValue: 1
+                  remarks: '组织深度'
+              - column:
+                  name: root_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                  remarks: '顶层节点自身为其rootId，子节点为其祖先的rootId'
         # 父组织ID索引，提升树形结构递归查询性能
         - createIndex:
             tableName: organization

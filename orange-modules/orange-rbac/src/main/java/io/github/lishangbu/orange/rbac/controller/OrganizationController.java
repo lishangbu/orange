@@ -27,6 +27,20 @@ public class OrganizationController {
   private final OrganizationService organizationService;
 
   /**
+   * 分页查询角色列表
+   *
+   * <p>
+   *
+   * @param page      分页参数，包含页码和每页大小
+   * @param condition 查询条件，包含角色代码、名称、启用状态等字段
+   * @return 角色分页数据，包含列表和分页信息
+   */
+  @GetMapping("/page")
+  public IPage<OrganizationTreeNode> page(Page<Organization> page, Organization condition) {
+    return organizationService.getPageByOrganization(page, condition);
+  }
+
+  /**
    * 新增组织
    *
    * @param organization 组织实体，包含名称、启用状态等信息
@@ -52,9 +66,21 @@ public class OrganizationController {
    *
    * @param id 组织ID
    */
-  @DeleteMapping("/{id:\\d+}")
-  public void delete(@PathVariable Long id) {
-    organizationService.deleteOrganization(id);
+  @DeleteMapping("/ancestor/{id:\\d+}")
+  public void removeOrganizationByAncestorId(@PathVariable Long id) {
+    organizationService.removeOrganizationByAncestorId(id);
+  }
+
+  /**
+   * 批量删除组织
+   * <p>
+   * 支持使用逗号分隔的路径参数传递多个 ID，例如 /1,2,3
+   *
+   * @param ids 组织ID列表，不能为空且元素为正整数
+   */
+  @DeleteMapping("/ancestors/{ids:\\d+(?:,\\d+)*}")
+  public void removeOrganizationByAncestorIds(@PathVariable List<Long> ids) {
+    organizationService.removeOrganizationByAncestorIds(ids);
   }
 
   /**

@@ -11,16 +11,31 @@
     <result column="enabled" property="enabled" jdbcType="BOOLEAN"/>
     <result column="remark" property="remark" jdbcType="VARCHAR"/>
     <result column="sort_order" property="sortOrder" jdbcType="INTEGER"/>
+    <result column="depth" property="depth" jdbcType="INTEGER"/>
+    <result column="root_id" property="rootId" jdbcType="BIGINT"/>
   </resultMap>
 
-  <!-- 递归查询所有子节点（多级） -->
+  <!-- 递归查询所有子节点（多级），返回全局层级 -->
   <select id="selectAllChildrenByParentId" resultMap="BaseResultMap">
-    WITH RECURSIVE organization_tree AS (
-      SELECT id, parent_id, name, code, enabled, remark, sort_order
+    WITH RECURSIVE parent_path AS (
+      SELECT id, parent_id, 1 AS depth
       FROM organization
+      WHERE id = #{parentId}
+      UNION ALL
+      SELECT o.id, o.parent_id, pp.depth + 1
+      FROM organization o
+      INNER JOIN parent_path pp ON o.id = pp.parent_id
+      WHERE pp.parent_id != 0
+    ),
+    parent_depth AS (
+      SELECT MAX(depth) AS depth FROM parent_path
+    ),
+    organization_tree AS (
+      SELECT id, parent_id, name, code, enabled, remark, sort_order, pd.depth + 1 AS depth
+      FROM organization, parent_depth pd
       WHERE parent_id = #{parentId}
       UNION ALL
-      SELECT o.id, o.parent_id, o.name, o.code, o.enabled, o.remark, o.sort_order
+      SELECT o.id, o.parent_id, o.name, o.code, o.enabled, o.remark, o.sort_order, ot.depth + 1
       FROM organization o
       INNER JOIN organization_tree ot ON o.parent_id = ot.id
     )
@@ -31,11 +46,11 @@
   <!-- 查询指定组织及其所有下级组织（含自身） -->
   <select id="selectOrganizationWithDescendantsById" resultMap="BaseResultMap">
     WITH RECURSIVE organization_tree AS (
-      SELECT id, parent_id, name, code, enabled, remark, sort_order
+      SELECT id, parent_id, name, code, enabled, remark, sort_order, 1 AS depth
       FROM organization
       WHERE id = #{id}
       UNION ALL
-      SELECT o.id, o.parent_id, o.name, o.code, o.enabled, o.remark, o.sort_order
+      SELECT o.id, o.parent_id, o.name, o.code, o.enabled, o.remark, o.sort_order, ot.depth + 1
       FROM organization o
       INNER JOIN organization_tree ot ON o.parent_id = ot.id
     )
@@ -43,4 +58,58 @@
     ORDER BY sort_order ASC, id ASC
   </select>
 
+  <!-- 查询指定组织ID列表及其所有下级组织（含自身） -->
+  <select id="selectOrganizationsWithDescendantsByIds" resultMap="BaseResultMap">
+    WITH RECURSIVE organization_tree AS (
+      SELECT id, parent_id, name, code, enabled, remark, sort_order, depth, root_id
+      FROM organization
+      WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+          #{id}
+        </foreach>
+      UNION ALL
+      SELECT o.id, o.parent_id, o.name, o.code, o.enabled, o.remark, o.sort_order, o.depth, o.root_id
+      FROM organization o
+      INNER JOIN organization_tree ot ON o.parent_id = ot.id
+    )
+    SELECT * FROM organization_tree
+    ORDER BY sort_order ASC, id ASC
+  </select>
+
+  <select id="selectListByOrganization" resultMap="BaseResultMap">
+    SELECT * FROM organization
+    <where>
+      <if test="organization.id != null">
+        AND id = #{organization.id}
+      </if>
+      <if test="organization.parentId != null">
+        AND parent_id = #{organization.parentId}
+      </if>
+      <if test="organization.enabled != null">
+        AND enabled = #{organization.enabled}
+      </if>
+      <if test="organization.code != null and organization.code.trim() != ''">
+        AND code LIKE CONCAT('%', #{organization.code}, '%')
+      </if>
+      <if test="organization.name != null and organization.name.trim() != ''">
+        AND name LIKE CONCAT('%', #{organization.name}, '%')
+      </if>
+    </where>
+    ORDER BY sort_order ASC, id ASC
+  </select>
+
+  <!-- 根据组织ID列表查询对应的根组织ID列表，去重后返回，支持分页 -->
+  <select id="selectRootIdByIds" resultType="java.lang.Long">
+    SELECT DISTINCT root_id
+    FROM organization
+    <where>
+      <if test="ids != null and ids.size() > 0">
+        id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+          #{id}
+        </foreach>
+      </if>
+    </where>
+    ORDER BY root_id ASC
+  </select>
 </mapper>

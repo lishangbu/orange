@@ -5,16 +5,15 @@ import io.github.lishangbu.orange.authorization.mapper.MenuMapper;
 import io.github.lishangbu.orange.authorization.model.MenuTreeNode;
 import io.github.lishangbu.orange.authorization.service.MenuService;
 import io.github.lishangbu.orange.web.util.TreeUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 菜单服务接口实现
@@ -61,6 +60,7 @@ public class MenuServiceImpl implements MenuService {
         MenuTreeNode::getId,
         MenuTreeNode::getParentId,
         MenuTreeNode::getChildren,
-      MenuTreeNode::setChildren, parentId);
+        MenuTreeNode::setChildren,
+        parentId);
   }
 }

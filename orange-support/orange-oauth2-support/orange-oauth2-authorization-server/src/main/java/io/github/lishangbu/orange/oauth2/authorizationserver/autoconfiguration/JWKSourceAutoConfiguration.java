@@ -3,7 +3,6 @@ package io.github.lishangbu.orange.oauth2.authorizationserver.autoconfiguration;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -35,12 +34,13 @@ import org.springframework.util.StringUtils;
  * <p>负责提供用于签名的 JWKSource 实例，支持从配置加载公/私钥，若未配置则回退为运行时生成的密钥对
  *
  * <p>行为要点：
+ *
  * <ul>
- *   <li>密钥在首次使用时懒初始化，线程安全</li>
- *   <li>优先使用公钥 thumbprint 作为 kid，保证 kid 稳定可复现，避免验证不稳定</li>
- *   <li>Spring Authorization Server 会自动从 JWKSource 提取公钥信息供 /.well-known/jwks.json 端点使用</li>
- *   <li>支持从 classpath 或文件系统加载 PEM 格式的公私钥</li>
- *   <li>加载失败时自动回退为随机生成的密钥对，并记录警告</li>
+ *   <li>密钥在首次使用时懒初始化，线程安全
+ *   <li>优先使用公钥 thumbprint 作为 kid，保证 kid 稳定可复现，避免验证不稳定
+ *   <li>Spring Authorization Server 会自动从 JWKSource 提取公钥信息供 /.well-known/jwks.json 端点使用
+ *   <li>支持从 classpath 或文件系统加载 PEM 格式的公私钥
+ *   <li>加载失败时自动回退为随机生成的密钥对，并记录警告
  * </ul>
  *
  * @author lishangbu
@@ -61,6 +61,7 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
 
   /**
    * 缓存的 JWKSet，包含私钥，用于 JWT 签名
+   *
    * <p>使用 volatile 保证多线程环境下的可见性，配合 synchronized 方法实现线程安全的懒加载
    */
   private volatile JWKSet jwkSet;
@@ -68,8 +69,8 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
   /**
    * 返回用于签名的 JWKSource
    *
-   * <p>方法保证密钥已初始化（从配置加载或运行时生成），并返回一个不可变的 JWKSet 供框架选择签名密钥
-   * Spring Authorization Server 会自动处理 /.well-known/jwks.json 端点，从此 JWKSource 提取公钥信息
+   * <p>方法保证密钥已初始化（从配置加载或运行时生成），并返回一个不可变的 JWKSet 供框架选择签名密钥 Spring Authorization Server 会自动处理
+   * /.well-known/jwks.json 端点，从此 JWKSource 提取公钥信息
    *
    * @return 包含私钥的不可变 JWKSource，用于 Authorization Server 的 JWT 签名
    */
@@ -84,11 +85,12 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
    * 确保密钥与 JWKSet 已经初始化（线程安全的懒初始化）
    *
    * <p>该方法执行以下操作：
+   *
    * <ol>
-   *   <li>检查是否已初始化，避免重复初始化</li>
-   *   <li>若公私钥为空，使用随机生成的密钥对并记录警告</li>
-   *   <li>计算 kid（优先使用公钥 thumbprint，失败时使用随机 UUID）</li>
-   *   <li>构建包含私钥的 JWKSet（框架会自动过滤私钥信息对外暴露）</li>
+   *   <li>检查是否已初始化，避免重复初始化
+   *   <li>若公私钥为空，使用随机生成的密钥对并记录警告
+   *   <li>计算 kid（优先使用公钥 thumbprint，失败时使用随机 UUID）
+   *   <li>构建包含私钥的 JWKSet（框架会自动过滤私钥信息对外暴露）
    * </ol>
    */
   private synchronized void ensureKeysInitialized() {
@@ -119,11 +121,7 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
 
     // 构建 JWK（包含私钥）
     RSAKey rsaKey =
-        new RSAKey.Builder(publicKey)
-            .privateKey(privateKey)
-            .keyID(kid)
-            .algorithm(alg)
-            .build();
+        new RSAKey.Builder(publicKey).privateKey(privateKey).keyID(kid).algorithm(alg).build();
 
     this.jwkSet = new JWKSet(rsaKey);
 
@@ -202,14 +200,14 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
    * 初始化时尝试从配置的资源位置加载 RSA 公钥和私钥
    *
    * <p>优先使用 oauth2Properties 中的 jwtPublicKeyLocation 和 jwtPrivateKeyLocation 指定的资源
-   * 若两者均成功加载则使用加载的密钥；若任一密钥缺失或解析失败则回退为随机生成的密钥对，
-   * 并记录警告，注意重启后之前签发的 token 将不可解析
+   * 若两者均成功加载则使用加载的密钥；若任一密钥缺失或解析失败则回退为随机生成的密钥对， 并记录警告，注意重启后之前签发的 token 将不可解析
    *
    * <p>支持的资源位置格式：
+   *
    * <ul>
-   *   <li>classpath: classpath:rsa/public.key</li>
-   *   <li>文件系统: file:/path/to/public.key</li>
-   *   <li>相对路径: rsa/public.key（相对于 classpath）</li>
+   *   <li>classpath: classpath:rsa/public.key
+   *   <li>文件系统: file:/path/to/public.key
+   *   <li>相对路径: rsa/public.key（相对于 classpath）
    * </ul>
    */
   @Override

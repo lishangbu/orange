@@ -51,7 +51,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     if (organization.getParentId() == TOP_LEVEL_PARENT_ID) {
       // 顶级组织，深度为1，rootId待插入后更新
       organization.setDepth(1);
-      organization.setRootId(null);
+      organization.setRootId(TOP_LEVEL_PARENT_ID);
       organizationMapper.insert(organization);
       // 插入后 rootId 设为自身 id
       organization.setRootId(organization.getId());

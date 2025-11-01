@@ -57,13 +57,6 @@ databaseChangeLog:
                   defaultValue: 0
                   remarks: '排序顺序'
               - column:
-                  name: depth
-                  type: int
-                  constraints:
-                    nullable: false
-                  defaultValue: 1
-                  remarks: '组织深度'
-              - column:
                   name: root_id
                   type: bigint
                   constraints:

@@ -50,13 +50,6 @@ public class Organization implements Serializable {
   private Integer sortOrder;
 
   /**
-   * 组织层级深度，表示当前节点距离根节点的层级
-   *
-   * <p>根节点深度为1，子节点依次递增 可用于树形结构展示、权限控制等场景
-   */
-  private Integer depth;
-
-  /**
    * 顶层组织ID冗余字段，表示当前节点所属的顶层公司/集团ID
    *
    * <p>顶层节点自身为其rootId，子节点为其祖先的rootId 用于高效分组、权限控制、报表统计等场景

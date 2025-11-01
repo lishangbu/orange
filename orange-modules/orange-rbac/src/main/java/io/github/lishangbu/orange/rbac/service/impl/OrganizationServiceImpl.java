@@ -33,13 +33,13 @@ public class OrganizationServiceImpl implements OrganizationService {
   private final OrganizationMapper organizationMapper;
 
   /**
-   * 新增组织信息，自动维护层级深度和顶级组织ID
+   * 新增组织信息，自动维护顶级组织ID
    *
-   * <p>根据 parentId 判断组织层级和 rootId：
+   * <p>根据 parentId 判断组织的 rootId：
    *
    * <ul>
-   *   <li>顶级组织（parentId=0）：depth=1，插入后 rootId=自身 id
-   *   <li>非顶级组织：depth=父组织.depth+1，rootId=父组织.rootId
+   *   <li>顶级组织（parentId=0）：插入后 rootId=自身 id
+   *   <li>非顶级组织：rootId=父组织.rootId
    * </ul>
    *
    * @param organization 组织实体
@@ -49,18 +49,16 @@ public class OrganizationServiceImpl implements OrganizationService {
   @Transactional(rollbackFor = Exception.class)
   public Organization saveOrganization(Organization organization) {
     if (organization.getParentId() == TOP_LEVEL_PARENT_ID) {
-      // 顶级组织，深度为1，rootId待插入后更新
-      organization.setDepth(1);
+      // 顶级组织，rootId待插入后更新
       organization.setRootId(TOP_LEVEL_PARENT_ID);
       organizationMapper.insert(organization);
       // 插入后 rootId 设为自身 id
       organization.setRootId(organization.getId());
       organizationMapper.updateById(organization);
     } else {
-      // 非顶级组织，需查询父组织
+      // 非顶级组织，需查询父组织以继承 rootId
       Organization parent = organizationMapper.selectById(organization.getParentId());
       Assert.notNull(parent, "父组织不存在，无法新增");
-      organization.setDepth(parent.getDepth() + 1);
       organization.setRootId(parent.getRootId());
       organizationMapper.insert(organization);
     }

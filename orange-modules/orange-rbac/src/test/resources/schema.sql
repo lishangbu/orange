@@ -7,7 +7,6 @@ CREATE TABLE organization (
     enabled BOOLEAN DEFAULT TRUE NOT NULL, -- 组织是否启用
     remark VARCHAR(200), -- 备注
     sort_order INTEGER DEFAULT 0 NOT NULL, -- 排序顺序
-    depth INTEGER DEFAULT 1 NOT NULL, -- 组织深度
     root_id BIGINT NOT NULL DEFAULT 0 -- 顶层组织ID冗余
 );
 

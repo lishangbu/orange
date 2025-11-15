@@ -4,8 +4,7 @@ import io.github.lishangbu.orange.oauth2.common.result.SecurityErrorResultCode;
 import io.github.lishangbu.orange.web.util.JsonResponseWriter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -20,9 +19,8 @@ import org.springframework.security.web.access.ExceptionTranslationFilter;
  * @author lishangbu
  * @since 2025/8/22
  */
+@Slf4j
 public class DefaultAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
-  private static final Logger log = LoggerFactory.getLogger(DefaultAuthenticationEntryPoint.class);
 
   @Override
   public void commence(

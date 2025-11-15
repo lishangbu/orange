@@ -8,6 +8,17 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import io.github.lishangbu.orange.oauth2.common.properties.Oauth2Properties;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyFactory;
@@ -18,15 +29,6 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.util.StringUtils;
 
 /**
  * JWKSource 自动装配
@@ -121,7 +123,7 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
 
     // 构建 JWK（包含私钥）
     RSAKey rsaKey =
-        new RSAKey.Builder(publicKey).privateKey(privateKey).keyID(kid).algorithm(alg).build();
+      new RSAKey.Builder(publicKey).privateKey(privateKey).keyID(kid).algorithm(alg).build();
 
     this.jwkSet = new JWKSet(rsaKey);
 
@@ -161,16 +163,16 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
    * @throws InvalidKeySpecException 当密钥格式不符合 X.509 编码时抛出
    */
   private static RSAPublicKey loadPublicKey(String publicKeyContent)
-      throws NoSuchAlgorithmException, InvalidKeySpecException {
+    throws NoSuchAlgorithmException, InvalidKeySpecException {
     publicKeyContent =
-        publicKeyContent
-            .replace("-----BEGIN PUBLIC KEY-----", "")
-            .replace("-----END PUBLIC KEY-----", "")
-            .replaceAll("\\s", "");
+      publicKeyContent
+        .replace("-----BEGIN PUBLIC KEY-----", "")
+        .replace("-----END PUBLIC KEY-----", "")
+        .replaceAll("\\s", "");
     byte[] encoded = java.util.Base64.getDecoder().decode(publicKeyContent);
     KeyFactory keyFactory = KeyFactory.getInstance("RSA");
     return (RSAPublicKey)
-        keyFactory.generatePublic(new java.security.spec.X509EncodedKeySpec(encoded));
+      keyFactory.generatePublic(new java.security.spec.X509EncodedKeySpec(encoded));
   }
 
   /**
@@ -184,16 +186,16 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
    * @throws InvalidKeySpecException 当密钥格式不符合 PKCS#8 编码时抛出
    */
   private static RSAPrivateKey loadPrivateKey(String privateKeyContent)
-      throws NoSuchAlgorithmException, InvalidKeySpecException {
+    throws NoSuchAlgorithmException, InvalidKeySpecException {
     privateKeyContent =
-        privateKeyContent
-            .replace("-----BEGIN PRIVATE KEY-----", "")
-            .replace("-----END PRIVATE KEY-----", "")
-            .replaceAll("\\s", "");
+      privateKeyContent
+        .replace("-----BEGIN PRIVATE KEY-----", "")
+        .replace("-----END PRIVATE KEY-----", "")
+        .replaceAll("\\s", "");
     byte[] encoded = java.util.Base64.getDecoder().decode(privateKeyContent);
     KeyFactory keyFactory = KeyFactory.getInstance("RSA");
     return (RSAPrivateKey)
-        keyFactory.generatePrivate(new java.security.spec.PKCS8EncodedKeySpec(encoded));
+      keyFactory.generatePrivate(new java.security.spec.PKCS8EncodedKeySpec(encoded));
   }
 
   /**
@@ -214,6 +216,10 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
   public void afterPropertiesSet() {
     final String jwtPublicKeyLocation = oauth2Properties.getJwtPublicKeyLocation();
     final String jwtPrivateKeyLocation = oauth2Properties.getJwtPrivateKeyLocation();
+    // 密钥缺失或解析失败，标记为未加载状态，将在首次使用时生成随机密钥对
+    if (ObjectUtils.isEmpty(jwtPublicKeyLocation) && ObjectUtils.isEmpty(jwtPrivateKeyLocation)) {
+      log.warn("未配置公钥和私钥路径，将在首次使用时生成随机密钥对");
+    }
 
     RSAPublicKey loadedPublic = null;
     RSAPrivateKey loadedPrivate = null;
@@ -225,7 +231,7 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
         if (resource.exists() && resource.isReadable()) {
           try (InputStream inputStream = resource.getInputStream()) {
             String content =
-                new String(inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+              new String(inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
             loadedPublic = loadPublicKey(content);
             log.debug("从 [{}] 成功加载公钥", jwtPublicKeyLocation);
           }
@@ -237,6 +243,8 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
       } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
         log.error("公钥解析失败，无法从 [{}] 解析到有效公钥: {}", jwtPublicKeyLocation, e.getMessage());
       }
+    } else {
+      log.warn("公钥或私钥加载不完整，将在首次使用时生成随机密钥对");
     }
 
     // 尝试加载私钥
@@ -246,7 +254,7 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
         if (resource.exists() && resource.isReadable()) {
           try (InputStream inputStream = resource.getInputStream()) {
             String content =
-                new String(inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+              new String(inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
             loadedPrivate = loadPrivateKey(content);
             log.debug("从 [{}] 成功加载私钥", jwtPrivateKeyLocation);
           }
@@ -258,6 +266,8 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
       } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
         log.error("私钥解析失败，无法从 [{}] 解析到有效私钥: {}", jwtPrivateKeyLocation, e.getMessage());
       }
+    } else {
+      log.warn("私钥加载不完整，将在首次使用时生成随机密钥对");
     }
 
     // 若公私钥均已加载则直接使用
@@ -265,14 +275,6 @@ public class JWKSourceAutoConfiguration implements InitializingBean {
       this.publicKey = loadedPublic;
       this.privateKey = loadedPrivate;
       log.debug("成功从配置加载公私钥对");
-      return;
-    }
-
-    // 任一密钥缺失或解析失败，标记为未加载状态，将在首次使用时生成随机密钥对
-    if (StringUtils.hasText(jwtPublicKeyLocation) || StringUtils.hasText(jwtPrivateKeyLocation)) {
-      log.warn("公钥或私钥加载不完整，将在首次使用时生成随机密钥对");
-    } else {
-      log.debug("未配置公钥或私钥路径，将在首次使用时生成随机密钥对");
     }
   }
 }
